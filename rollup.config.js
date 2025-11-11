@@ -1,0 +1,42 @@
+import typescript from '@rollup/plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import dts from 'rollup-plugin-dts';
+
+const external = ['react', '@tarojs/taro'];
+
+export default [
+  // ES Module build
+  {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/index.esm.js',
+      format: 'esm',
+      sourcemap: true,
+    },
+    external,
+    plugins: [typescript(), resolve(), commonjs()],
+  },
+  // CommonJS build
+  {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/index.js',
+      format: 'cjs',
+      sourcemap: true,
+      exports: 'named',
+    },
+    external,
+    plugins: [typescript(), resolve(), commonjs()],
+  },
+  // Type definitions
+  {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/index.d.ts',
+      format: 'esm',
+    },
+    external,
+    plugins: [dts()],
+  },
+];

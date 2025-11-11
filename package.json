@@ -1,0 +1,85 @@
+{
+  "name": "@vibe-shell/use-storage",
+  "version": "1.0.0",
+  "description": "为 Taro 应用程序提供本地存储和会话存储功能的 React Hook，支持多平台数据同步",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "taro",
+    "react",
+    "hooks",
+    "storage",
+    "localstorage",
+    "sessionstorage",
+    "wechat",
+    "miniprogram",
+    "h5",
+    "存储",
+    "本地存储",
+    "小程序",
+    "微信小程序",
+    "数据同步",
+    "react-hooks"
+  ],
+  "author": "Vibe Shell Team",
+  "license": "MIT",
+  "homepage": "https://github.com/vibe-shell/vibe-shell/tree/main/packages/taro-use-storage",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vibe-shell/vibe-shell.git",
+    "directory": "packages/taro-use-storage"
+  },
+  "peerDependencies": {
+    "@tarojs/taro": ">=3.0.0",
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@tarojs/taro": "3.6.24",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@types/jest": "^29.0.0",
+    "@types/react": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "8.57.1",
+    "eslint-plugin-react": "^7.32.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.3.1",
+    "react-test-renderer": "^18.0.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-dts": "^5.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

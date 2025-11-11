@@ -40,11 +40,10 @@
   ],
   "author": "Vibe Shell Team",
   "license": "MIT",
-  "homepage": "https://github.com/vibe-shell/vibe-shell/tree/main/packages/taro-use-storage",
+  "homepage": "https://github.com/tourze/taro-use-storage",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vibe-shell/vibe-shell.git",
-    "directory": "packages/taro-use-storage"
+    "url": "https://github.com/tourze/taro-use-storage.git"
   },
   "peerDependencies": {
     "@tarojs/taro": ">=3.0.0",

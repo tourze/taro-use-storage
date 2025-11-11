@@ -22,8 +22,8 @@ import Taro from '@tarojs/taro';
 
 const mockTaro = Taro as jest.Mocked<typeof Taro>;
 declare global {
-  interface Window { wx?: any }
-  var wx: any | undefined
+  interface Window { wx?: Record<string, unknown> }
+  const wx: Record<string, unknown> | undefined
 }
 // Mock console methods to avoid noise in tests
 const originalConsole = global.console;

@@ -1,6 +1,7 @@
 {
   "name": "@vibe-shell/use-storage",
   "version": "1.0.0",
+  "type": "module",
   "description": "为 Taro 应用程序提供本地存储和会话存储功能的 React Hook，支持多平台数据同步",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

@@ -10,7 +10,7 @@ const meta: Meta<typeof CounterDemo> = {
   },
   tags: ['autodocs'],
   decorators: [
-    (Story) => React.createElement('div', { style: { padding: '20px' } }, React.createElement(Story)),
+    (Story: any) => React.createElement('div', { style: { padding: '20px' } }, React.createElement(Story)),
   ],
 };
 

@@ -19,6 +19,7 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint:ci": "eslint --config .eslintrc.ci.cjs src --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "type-check:ci": "tsc --noEmit -p tsconfig.ci.json",
     "prepublishOnly": "npm run build",

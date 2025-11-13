@@ -3,7 +3,17 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import dts from 'rollup-plugin-dts';
 
-const external = ['react', '@tarojs/taro'];
+const external = ['react', '@tarojs/taro', '@storybook/react-vite'];
+
+// TypeScript 插件配置，排除 stories 文件
+const typescriptOptions = {
+  exclude: [
+    'src/**/*.stories.*',
+    'src/**/*.test.*',
+    'src/**/*.spec.*',
+    'node_modules/**'
+  ]
+};
 
 export default [
   // ES Module build
@@ -15,7 +25,7 @@ export default [
       sourcemap: true,
     },
     external,
-    plugins: [typescript(), resolve(), commonjs()],
+    plugins: [typescript(typescriptOptions), resolve(), commonjs()],
   },
   // CommonJS build
   {
@@ -27,7 +37,7 @@ export default [
       exports: 'named',
     },
     external,
-    plugins: [typescript(), resolve(), commonjs()],
+    plugins: [typescript(typescriptOptions), resolve(), commonjs()],
   },
   // Type definitions
   {

@@ -22,7 +22,10 @@
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
       "Bash(powershell:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(CI=true npm ci:*)",
+      "Bash(set NODE_ENV=production:*)",
+      "Bash(set:*)"
     ],
     "deny": [],
     "ask": []

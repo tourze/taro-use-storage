@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CounterDemo } from './CounterDemo';
 
-const meta = {
+const meta: Meta<typeof CounterDemo> = {
   title: 'Hooks/useStorage/CounterDemo',
   component: CounterDemo,
   parameters: {
@@ -12,7 +12,7 @@ const meta = {
   decorators: [
     (Story) => React.createElement('div', { style: { padding: '20px' } }, React.createElement(Story)),
   ],
-} satisfies Meta<typeof CounterDemo>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

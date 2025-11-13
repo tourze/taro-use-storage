@@ -124,12 +124,12 @@ const useStorage = <T = unknown>(key: string, defaultValue: T | null = null) => 
   useEffect(() => {
     console.log("load storage", key, JSON.stringify(defaultValue));
     Taro.getStorage({ key })
-      .then((res) => {
+      .then((res: any) => {
         setData(res.data);
         setLoading(false);
         return setError(null);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         setData(defaultValue);
         setLoading(false);
         setError(err);

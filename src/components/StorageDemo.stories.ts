@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StorageDemo } from './StorageDemo';
 
-const meta = {
+const meta: Meta<typeof StorageDemo> = {
   title: 'Hooks/useStorage/StorageDemo',
   component: StorageDemo,
   parameters: {
@@ -18,7 +18,7 @@ const meta = {
       description: '默认值',
     },
   },
-} satisfies Meta<typeof StorageDemo>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

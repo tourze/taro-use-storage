@@ -58,6 +58,7 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "@storybook/addon-docs": "^10.0.7",
     "@storybook/addon-onboarding": "^10.0.7",
+    "@storybook/cli": "^10.0.7",
     "@storybook/react-vite": "^10.0.7",
     "@tarojs/taro": "3.6.24",
     "@tarojs/taro-h5": "^3.6.24",

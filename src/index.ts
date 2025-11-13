@@ -8,8 +8,69 @@
 // 好好想一下使用redux的理由，最大理由就是希望View/Data同步
 // 既然如此，使用react-hooks封装Storage操作应该是更加合理的方案才对？
 
-import Taro from "@tarojs/taro";
 import { useState, useEffect, useCallback } from "react";
+
+// 获取 Taro 实例，支持 Storybook 环境
+const getTaro = () => {
+  // 优先尝试导入 Taro（正常环境）
+  try {
+    // 动态导入，避免在 Storybook 环境中报错
+    if (typeof require !== 'undefined') {
+      const Taro = require('@tarojs/taro');
+      if (Taro && Taro.getStorage) {
+        return Taro;
+      }
+    }
+  } catch (e) {
+    // 导入失败，继续尝试其他方法
+  }
+
+  // 尝试从全局获取（Storybook 环境）
+  if (typeof window !== 'undefined' && (window as any).Taro) {
+    return (window as any).Taro;
+  }
+  if (typeof global !== 'undefined' && (global as any).Taro) {
+    return (global as any).Taro;
+  }
+
+  // 最后的 fallback：基于 localStorage 的实现
+  return {
+    getStorage: ({ key }: { key: string }) => {
+      const value = localStorage.getItem(key);
+      if (value) {
+        return Promise.resolve({ data: JSON.parse(value) });
+      }
+      return Promise.reject(new Error('Storage not found'));
+    },
+    setStorage: ({ key, data }: { key: string; data: any }) => {
+      localStorage.setItem(key, JSON.stringify(data));
+      return Promise.resolve();
+    },
+    removeStorage: ({ key }: { key: string }) => {
+      localStorage.removeItem(key);
+      return Promise.resolve();
+    },
+    eventCenter: {
+      trigger: (event: string, data: any) => {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent(event, { detail: data }));
+        }
+      },
+      on: (event: string, callback: Function) => {
+        if (typeof window !== 'undefined') {
+          window.addEventListener(event, callback as EventListener);
+        }
+      },
+      off: (event: string, callback: Function) => {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener(event, callback as EventListener);
+        }
+      },
+    },
+  };
+};
+
+const Taro = getTaro();
 
 const EVENT_KEY = "storage_change";
 

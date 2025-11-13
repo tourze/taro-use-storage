@@ -1,0 +1,13 @@
+@echo off
+echo Starting Storybook on port 6006...
+echo First, checking if port 6006 is in use...
+
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":6006" ^| findstr "LISTENING"') do (
+    echo Port 6006 is in use by process %%a
+    echo Killing process %%a...
+    powershell -Command "Stop-Process -Id %%a -Force" 2>nul
+    timeout /t 2 /nobreak >nul
+)
+
+echo Starting Storybook...
+npm run storybook

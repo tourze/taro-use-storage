@@ -12,7 +12,17 @@
       "Bash(git rm:*)",
       "Bash(npm ci:*)",
       "Bash(git checkout:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(npx storybook@latest init:*)",
+      "Bash(npm run storybook:*)",
+      "Bash(npx storybook dev:*)",
+      "Bash(npm run build-storybook:*)",
+      "Bash(cat:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell:*)",
+      "Bash(kill:*)"
     ],
     "deny": [],
     "ask": []

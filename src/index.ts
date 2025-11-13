@@ -10,17 +10,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-// 获取 Taro 实例，支持 Storybook 环境
+// 获取 Taro 实例，支持 Storybook 环境和真实 Taro H5
 const getTaro = () => {
   // 优先尝试导入 Taro（正常环境）
   try {
-    // 动态导入，避免在 Storybook 环境中报错
-    if (typeof require !== 'undefined') {
-      const Taro = require('@tarojs/taro');
-      if (Taro && Taro.getStorage) {
-        return Taro;
-      }
-    }
+    // 使用动态 import 来获取真实的 Taro H5
+    return require('@tarojs/taro');
   } catch (e) {
     // 导入失败，继续尝试其他方法
   }
@@ -33,7 +28,7 @@ const getTaro = () => {
     return (global as any).Taro;
   }
 
-  // 最后的 fallback：基于 localStorage 的实现
+  // 最后的 fallback：基于 localStorage 的实现，完全模拟 Taro H5 行为
   return {
     getStorage: ({ key }: { key: string }) => {
       const value = localStorage.getItem(key);
@@ -67,6 +62,16 @@ const getTaro = () => {
         }
       },
     },
+    // 添加更多 Taro H5 特有的 API 以确保兼容性
+    ENV_TYPE: {
+      WEAPP: 'weapp',
+      SWAN: 'swan',
+      ALIPAY: 'alipay',
+      TT: 'tt',
+      QQ: 'qq',
+      JD: 'jd',
+      H5: 'h5'
+    }
   };
 };
 

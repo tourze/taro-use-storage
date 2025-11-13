@@ -52,15 +52,6 @@ const config: StorybookConfig = {
       'ENABLE_TEMPLATE_CONTENT': JSON.stringify(true)
     };
 
-    // Add resolve alias for Taro modules
-    if (!config.resolve) config.resolve = {};
-    if (!config.resolve.alias) config.resolve.alias = {};
-
-    // 使用绝对路径指向我们的 mock 文件
-    const path = require('path');
-    config.resolve.alias['@tarojs/taro'] = path.resolve(__dirname, './taro-mock.js');
-    config.resolve.alias['@tarojs/taro-h5'] = path.resolve(__dirname, './taro-mock.js');
-
     return config;
   }
 };

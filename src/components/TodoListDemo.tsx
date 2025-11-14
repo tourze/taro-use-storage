@@ -9,7 +9,7 @@ interface Todo {
 }
 
 export const TodoListDemo: React.FC = () => {
-  const { data: todos = [], loading, update } = useStorage<Todo[]>('todos', []);
+  const { data: todos = [], loading, update } = useStorage<Todo[]>('todos', [] as Todo[]);
   const [newTodoText, setNewTodoText] = useState('');
 
   const addTodo = async () => {
@@ -22,29 +22,29 @@ export const TodoListDemo: React.FC = () => {
       createdAt: new Date().toISOString()
     };
 
-    await update([...todos, newTodo]);
+    await update([...(todos || []), newTodo]);
     setNewTodoText('');
   };
 
   const toggleTodo = async (id: number) => {
-    const updatedTodos = todos.map(todo =>
+    const updatedTodos = (todos || []).map(todo =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     await update(updatedTodos);
   };
 
   const deleteTodo = async (id: number) => {
-    const updatedTodos = todos.filter(todo => todo.id !== id);
+    const updatedTodos = (todos || []).filter(todo => todo.id !== id);
     await update(updatedTodos);
   };
 
   const clearCompleted = async () => {
-    const activeTodos = todos.filter(todo => !todo.completed);
+    const activeTodos = (todos || []).filter(todo => !todo.completed);
     await update(activeTodos);
   };
 
-  const completedCount = todos.filter(todo => todo.completed).length;
-  const activeCount = todos.length - completedCount;
+  const completedCount = (todos || []).filter(todo => todo.completed).length;
+  const activeCount = (todos || []).length - completedCount;
 
   return (
     <div style={{
@@ -112,13 +112,13 @@ export const TodoListDemo: React.FC = () => {
       <div>
         {loading ? (
           <div style={{ textAlign: 'center', color: '#666' }}>加载中...</div>
-        ) : todos.length === 0 ? (
+        ) : (todos || []).length === 0 ? (
           <div style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
             暂无待办事项
           </div>
         ) : (
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {todos.map((todo) => (
+            {(todos || []).map((todo) => (
               <li
                 key={todo.id}
                 style={{

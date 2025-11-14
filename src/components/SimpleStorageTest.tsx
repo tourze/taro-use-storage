@@ -11,29 +11,29 @@ const getGlobalTaro = () => {
 
   // 如果没有 Taro，创建一个 localStorage fallback
   return {
-    getStorage: ({ key }) => {
+    getStorage: ({ key }: { key: string }) => {
       const value = localStorage.getItem(key);
       if (value) {
         return Promise.resolve({ data: JSON.parse(value) });
       }
       return Promise.reject(new Error('Storage not found'));
     },
-    setStorage: ({ key, data }) => {
+    setStorage: ({ key, data }: { key: string; data: any }) => {
       localStorage.setItem(key, JSON.stringify(data));
       return Promise.resolve();
     },
-    removeStorage: ({ key }) => {
+    removeStorage: ({ key }: { key: string }) => {
       localStorage.removeItem(key);
       return Promise.resolve();
     },
     eventCenter: {
-      trigger: (event, data) => {
+      trigger: (event: string, data: any) => {
         window.dispatchEvent(new CustomEvent(event, { detail: data }));
       },
-      on: (event, callback) => {
+      on: (event: string, callback: any) => {
         window.addEventListener(event, callback);
       },
-      off: (event, callback) => {
+      off: (event: string, callback: any) => {
         window.removeEventListener(event, callback);
       },
     }

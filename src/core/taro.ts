@@ -22,10 +22,10 @@ export const getTaroInstance = (): ITaroStorage => {
 
   // 尝试从全局获取（Storybook 环境）
   if (typeof window !== 'undefined' && (window as WindowWithTaro).Taro) {
-    return (window as WindowWithTaro).Taro!;
+    return (window as WindowWithTaro).Taro! as ITaroStorage;
   }
   if (typeof global !== 'undefined' && (global as any).Taro) {
-    return (global as any).Taro;
+    return (global as any).Taro as ITaroStorage;
   }
 
   // 最后的 fallback：基于 localStorage 的实现，完全模拟 Taro H5 行为

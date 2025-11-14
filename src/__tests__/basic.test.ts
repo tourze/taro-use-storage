@@ -5,38 +5,17 @@
 import { renderHook, act } from '@testing-library/react';
 import useStorage, { get, set, remove } from '../index';
 
-// 简单的 localStorage mock
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: jest.fn((key: string) => store[key] || null),
-    setItem: jest.fn((key: string, value: string) => {
-      store[key] = value;
-    }),
-    removeItem: jest.fn((key: string) => {
-      delete store[key];
-    }),
-    clear: jest.fn(() => {
-      store = {};
-    }),
-    key: jest.fn((index: number) => {
-      const keys = Object.keys(store);
-      return keys[index] || null;
-    }),
-    get length() {
-      return Object.keys(store).length;
-    }
-  };
-})();
+// Mock the getTaroInstance function
+jest.mock('../core/taro', () => ({
+  ...jest.requireActual('../core/taro'),
+  getTaroInstance: jest.fn(),
+}));
 
-// Mock localStorage
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
-  writable: true
-});
+import { getTaroInstance } from '../core/taro';
+const mockGetTaroInstance = getTaroInstance as jest.MockedFunction<typeof getTaroInstance>;
 
-// Mock Taro
-jest.mock('@tarojs/taro', () => ({
+// Create mock Taro instance
+const mockTaro = {
   getStorage: jest.fn(),
   setStorage: jest.fn(),
   removeStorage: jest.fn(),
@@ -50,12 +29,12 @@ jest.mock('@tarojs/taro', () => ({
     ALIPAY: 'alipay',
     H5: 'h5',
   },
-}));
+};
 
 describe('基础功能测试', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    localStorageMock.clear();
+    mockGetTaroInstance.mockReturnValue(mockTaro as any);
   });
 
   test('useStorage 基础功能应该正常工作', async () => {

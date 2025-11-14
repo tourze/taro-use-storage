@@ -13,12 +13,27 @@ import {
 } from '../types';
 
 /**
+ * 增强的存储 Hook - 重载版本，支持默认值作为第二个参数
+ */
+export function useStorage<T = any>(
+  key: string,
+  defaultValue: T,
+  options?: Omit<StorageOptions<T>, 'defaultValue'>
+): StorageReturn<T>;
+
+/**
  * 增强的存储 Hook
  */
 export function useStorage<T = any>(
   key: string,
   options: StorageOptions<T> = {}
 ): StorageReturn<T> {
+
+  // 处理重载：如果第二个参数不是配置对象，则作为默认值
+  const actualOptions: StorageOptions<T> =
+    (typeof options === 'undefined' || 'defaultValue' in options)
+      ? options as StorageOptions<T>
+      : { defaultValue: options as T };
   const {
     defaultValue = null,
     type = 'local',
@@ -28,7 +43,7 @@ export function useStorage<T = any>(
     validator,
     transformer,
     onError
-  } = options;
+  } = actualOptions;
 
   const [data, setData] = useState<T | null>(defaultValue);
   const [loading, setLoading] = useState(true);

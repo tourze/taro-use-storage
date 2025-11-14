@@ -5,8 +5,17 @@
 import { StorageManager } from '../core/storage';
 import { StorageOptions } from '../types';
 
-// Mock Taro module
-jest.mock('@tarojs/taro', () => ({
+// Mock the getTaroInstance function
+jest.mock('../core/taro', () => ({
+  ...jest.requireActual('../core/taro'),
+  getTaroInstance: jest.fn(),
+}));
+
+import { getTaroInstance } from '../core/taro';
+const mockGetTaroInstance = getTaroInstance as jest.MockedFunction<typeof getTaroInstance>;
+
+// Create mock Taro instance
+const mockTaro = {
   getStorage: jest.fn(),
   setStorage: jest.fn(),
   removeStorage: jest.fn(),
@@ -20,16 +29,14 @@ jest.mock('@tarojs/taro', () => ({
     ALIPAY: 'alipay',
     H5: 'h5',
   },
-}));
-
-import Taro from '@tarojs/taro';
-const mockTaro = Taro as jest.Mocked<typeof Taro>;
+};
 
 describe('StorageManager', () => {
   let storageManager: StorageManager;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetTaroInstance.mockReturnValue(mockTaro as any);
     storageManager = new StorageManager();
   });
 

@@ -28,7 +28,9 @@
       "Bash(set:*)",
       "Bash(npm run type-check:ci:*)",
       "Bash(npm test:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(gh run list:*)",
+      "Bash(npm run lint:ci:*)"
     ],
     "deny": [],
     "ask": []

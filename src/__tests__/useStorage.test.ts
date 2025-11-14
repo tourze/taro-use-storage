@@ -5,8 +5,17 @@
 import { renderHook, act } from '@testing-library/react';
 import useStorage, { get, set, remove, refresh } from '../index';
 
-// Mock Taro module before importing
-jest.mock('@tarojs/taro', () => ({
+// Mock the getTaroInstance function
+jest.mock('../core/taro', () => ({
+  ...jest.requireActual('../core/taro'),
+  getTaroInstance: jest.fn(),
+}));
+
+import { getTaroInstance } from '../core/taro';
+const mockGetTaroInstance = getTaroInstance as jest.MockedFunction<typeof getTaroInstance>;
+
+// Create mock Taro instance
+const mockTaro = {
   getStorage: jest.fn(),
   setStorage: jest.fn(),
   removeStorage: jest.fn(),
@@ -20,11 +29,7 @@ jest.mock('@tarojs/taro', () => ({
     ALIPAY: 'alipay',
     H5: 'h5',
   },
-}));
-
-import Taro from '@tarojs/taro';
-
-const mockTaro = Taro as jest.Mocked<typeof Taro>;
+};
 declare global {
   interface Window { wx?: Record<string, unknown> }
   const wx: Record<string, unknown> | undefined
@@ -33,6 +38,7 @@ declare global {
 const originalConsole = global.console;
 beforeEach(() => {
   jest.clearAllMocks();
+  mockGetTaroInstance.mockReturnValue(mockTaro as any);
   global.console = {
     ...originalConsole,
     log: jest.fn(),

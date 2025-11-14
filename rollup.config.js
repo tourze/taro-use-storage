@@ -11,13 +11,15 @@ const external = [
   '@storybook/react-vite'
 ];
 
-// TypeScript 插件配置，排除 stories 和测试文件
+// TypeScript 插件配置，排除 stories、测试文件和组件文件
 const typescriptOptions = {
   exclude: [
     'src/**/*.stories.*',
     'src/**/*.test.*',
     'src/**/*.spec.*',
     'src/**/*.d.ts',
+    'src/components/**/*', // 排除组件文件，它们是演示用途
+    'src/__tests__/**/*',  // 排除测试目录
     'node_modules/**'
   ],
   tsconfig: './tsconfig.json',
@@ -175,6 +177,8 @@ export default [
           'src/**/*.stories.*',
           'src/**/*.test.*',
           'src/**/*.spec.*',
+          'src/components/**/*', // 排除组件文件
+          'src/__tests__/**/*',  // 排除测试目录
           'node_modules/**'
         ]
       }),

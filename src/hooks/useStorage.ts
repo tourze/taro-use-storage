@@ -26,14 +26,17 @@ export function useStorage<T = any>(
  */
 export function useStorage<T = any>(
   key: string,
-  options: StorageOptions<T> = {}
+  optionsOrDefaultValue: StorageOptions<T> | T = {}
 ): StorageReturn<T> {
 
-  // 处理重载：如果第二个参数不是配置对象，则作为默认值
+  // 处理重载：如果第二个参数是配置对象（包含 defaultValue 或其他配置项），则作为配置对象
+  // 否则，将其视为默认值
   const actualOptions: StorageOptions<T> =
-    (typeof options === 'undefined' || 'defaultValue' in options)
-      ? options as StorageOptions<T>
-      : { defaultValue: options as T };
+    (optionsOrDefaultValue !== null &&
+     typeof optionsOrDefaultValue === 'object' &&
+     ('defaultValue' in optionsOrDefaultValue || 'type' in optionsOrDefaultValue || 'ttl' in optionsOrDefaultValue))
+      ? optionsOrDefaultValue as StorageOptions<T>
+      : { defaultValue: optionsOrDefaultValue as T };
   const {
     defaultValue = null,
     type = 'local',

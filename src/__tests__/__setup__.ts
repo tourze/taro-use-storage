@@ -2,13 +2,14 @@
  * Jest 测试环境设置
  */
 
-// 定义 global 对象，解决 "global is not defined" 错误
-if (typeof global === 'undefined') {
-  (global as any) = {};
+// 模拟 global.require，使用 Object.defineProperty 避免 ESLint 错误
+if (typeof global !== 'undefined') {
+  Object.defineProperty(global, 'require', {
+    value: jest.fn(),
+    writable: true,
+    configurable: true
+  });
 }
-
-// 模拟 global.require
-(global as any).require = jest.fn();
 
 // 模拟 navigator.storage
 Object.defineProperty(global.navigator, 'storage', {

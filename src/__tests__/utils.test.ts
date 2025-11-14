@@ -299,7 +299,7 @@ describe('工具函数', () => {
       const result = await cachedFn('arg1', 'arg2');
 
       expect(mockFn).toHaveBeenCalledWith('arg1', 'arg2');
-      expect(globalStorageManager.set).toHaveBeenCalledWith('cache-key', 'computed-value', undefined);
+      expect(globalStorageManager.set).toHaveBeenCalledWith('cache-key', 'computed-value', { ttl: undefined });
       expect(result).toBe('computed-value');
     });
 

@@ -55,4 +55,4 @@ export type {
 } from './types';
 
 // 默认导出主 Hook
-export { default } from './hooks/default';
+export { useStorage as default } from './hooks/useStorage';

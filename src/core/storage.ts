@@ -11,10 +11,9 @@ import {
   StorageQuota,
   StorageStats,
   BatchOperation,
-  StorageBatchResult,
-  StorageChangeEvent
+  StorageBatchResult
 } from '../types';
-import { globalEventEmitter, triggerStorageChange } from './events';
+import { triggerStorageChange } from './events';
 
 // 默认配置
 const DEFAULT_CONFIG: StorageConfig = {

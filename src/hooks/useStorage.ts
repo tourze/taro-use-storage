@@ -39,7 +39,6 @@ export function useStorage<T = any>(
       : { defaultValue: optionsOrDefaultValue as T };
   const {
     defaultValue = null,
-    type = 'local',
     sync = true,
     ttl,
     serializer,

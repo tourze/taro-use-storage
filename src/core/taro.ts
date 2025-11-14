@@ -4,8 +4,6 @@
 
 import { ITaroStorage, ITaroEventCenter, WxMiniProgram, GlobalWithWeapp, WindowWithTaro } from '../types';
 
-const DEFAULT_EVENT_KEY = 'storage_change';
-
 /**
  * 获取 Taro 实例，支持 Storybook 环境和真实 Taro H5
  */

@@ -6,7 +6,7 @@ import { getTaroInstance, getWxInstance, detectEnvironment, checkStorageAvailabi
 
 describe('Taro 兼容层', () => {
   describe('getTaroInstance', () => {
-    const originalRequire = require;
+    const originalRequire = global.require;
 
     beforeEach(() => {
       jest.resetModules();
@@ -15,7 +15,7 @@ describe('Taro 兼容层', () => {
     });
 
     afterEach(() => {
-      require = originalRequire;
+      global.require = originalRequire;
     });
 
     test('应该从 @tarojs/taro 模块获取实例', () => {

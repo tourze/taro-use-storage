@@ -25,7 +25,9 @@
       "Bash(kill:*)",
       "Bash(CI=true npm ci:*)",
       "Bash(set NODE_ENV=production:*)",
-      "Bash(set:*)"
+      "Bash(set:*)",
+      "Bash(npm run type-check:ci:*)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": []

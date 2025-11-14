@@ -68,12 +68,12 @@ export function useStorage<T = any>(
         const metaInfo = isDataWithMeta ? result as StorageDataWithMeta<T> : undefined;
 
         // 验证数据
-        if (validator && !validator(actualData)) {
+        if (validator && !validator(actualData as T)) {
           throw new Error(`Data validation failed for key: ${key}`);
         }
 
         // 转换数据
-        const finalData = transformer ? transformer(actualData) : actualData;
+        const finalData = transformer ? transformer(actualData as T) : (actualData as T);
 
         setData(finalData);
         setExists(true);

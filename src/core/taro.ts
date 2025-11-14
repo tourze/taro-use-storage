@@ -12,7 +12,7 @@ const DEFAULT_EVENT_KEY = 'storage_change';
 export const getTaroInstance = (): ITaroStorage => {
   // 优先尝试导入 Taro（正常环境）
   try {
-    const taroModule = require('@tarojs/taro');
+    const taroModule = global.require('@tarojs/taro');
     if (taroModule && typeof taroModule.getStorage === 'function') {
       return taroModule as ITaroStorage;
     }
@@ -59,7 +59,7 @@ function createFallbackTaro(): ITaroStorage {
     setStorage: async ({ key, data }) => {
       try {
         localStorage.setItem(key, JSON.stringify(data));
-        return { errMsg: 'setStorage:ok' };
+        return { errMsg: 'setStorage:ok', data: undefined };
       } catch (e) {
         return Promise.reject(new Error(`Storage set error for key: ${key}`));
       }
@@ -68,7 +68,7 @@ function createFallbackTaro(): ITaroStorage {
     removeStorage: async ({ key }) => {
       try {
         localStorage.removeItem(key);
-        return { errMsg: 'removeStorage:ok' };
+        return { errMsg: 'removeStorage:ok', data: undefined };
       } catch (e) {
         return Promise.reject(new Error(`Storage remove error for key: ${key}`));
       }

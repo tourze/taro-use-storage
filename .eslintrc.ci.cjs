@@ -37,6 +37,8 @@ module.exports = {
     'src/components/*Demo.*',
     'src/components/SimpleStorageTest.*',
     'src/components/TaroTestComponent.*',
-    'src/components/TestStory.*'
+    'src/components/TestStory.*',
+    'src/**/*.test.*',
+    'src/**/*.spec.*'
   ]
 };

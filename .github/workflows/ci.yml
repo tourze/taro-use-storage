@@ -1,69 +1,261 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, develop ]
   pull_request:
     branches: [ main, master ]
+  release:
+    types: [ published ]
+
+env:
+  NODE_VERSION: '18'
+  NPM_REGISTRY: 'https://registry.npmjs.org/'
 
 jobs:
+  # 代码质量检查
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint:ci
+
+      - name: Type check
+        run: npm run type-check:ci
+
+  # 测试
   test:
+    name: Tests
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-    - name: Configure npm for reliability
-      run: |
-        npm config set fetch-timeout 300000
-        npm config set fetch-retry-mintimeout 20000
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Install dependencies
-      run: npm install
+      - name: Run tests
+        run: npm run test:coverage
 
-    - name: Run type check
-      run: npm run type-check:ci
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == 18
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
-    - name: Run linting
-      run: npm run lint:ci
+  # 构建
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Run tests
-      run: npm run test
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-    - name: Build package
-      run: npm run build
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Build Storybook
-      run: npm run build-storybook
+      - name: Build package
+        run: npm run build
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  # Storybook 构建
   storybook:
+    name: Build Storybook
     runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/master'
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Build Storybook
-      run: npm run build-storybook
+      - name: Build Storybook
+        run: npm run build-storybook
 
-    - name: Deploy Storybook to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./storybook-static
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./storybook-static
+          destination_dir: storybook
+
+  # 包大小分析
+  bundle-analysis:
+    name: Bundle Analysis
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist/
+
+      - name: Analyze bundle size
+        run: |
+          npm install -g bundlesize
+          echo '{"dist/index.esm.js": "20 kB", "dist/index.js": "20 kB"}' > .bundlesize.json
+          bundlesize
+
+  # 发布到 NPM
+  publish:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: [lint, test, build]
+    if: github.event_name == 'release'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: ${{ env.NPM_REGISTRY }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # 创建 GitHub Release
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Get package version
+        id: package-version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.VERSION }}
+          release_name: Release v${{ steps.package-version.outputs.VERSION }}
+          body: |
+            ## Changes in v${{ steps.package-version.outputs.VERSION }}
+
+            ### Features
+            - 🚀 重构项目架构，提升代码可维护性
+            - 🔧 增强 TypeScript 类型支持
+            - 📈 添加性能监控和统计功能
+            - 🛡️ 改进错误处理和数据验证
+            - 🎯 支持数据过期时间（TTL）
+            - 📦 添加批量操作功能
+
+            ### Improvements
+            - 🧪 完善测试覆盖率
+            - 📚 更新文档和示例
+            - ⚡ 优化构建性能
+            - 🔧 增强 CI/CD 流程
+
+            ### Bug Fixes
+            - 修复 TypeScript 类型错误
+            - 改进兼容性处理
+            - 优化事件监听机制
+          draft: false
+          prerelease: false
+
+  # 通知
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [lint, test, build]
+    if: always()
+    steps:
+      - name: Notify on success
+        if: ${{ needs.lint.result == 'success' && needs.test.result == 'success' && needs.build.result == 'success' }}
+        run: |
+          echo "✅ All checks passed! Package is ready for release."
+
+      - name: Notify on failure
+        if: ${{ needs.lint.result == 'failure' || needs.test.result == 'failure' || needs.build.result == 'failure' }}
+        run: |
+          echo "❌ Some checks failed. Please review the logs and fix the issues."
+          exit 1

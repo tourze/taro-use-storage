@@ -1,0 +1,14 @@
+[
+  {
+    "path": "dist/index.esm.js",
+    "maxSize": "15 kB"
+  },
+  {
+    "path": "dist/index.js",
+    "maxSize": "15 kB"
+  },
+  {
+    "path": "dist/index.esm.min.js",
+    "maxSize": "10 kB"
+  }
+]

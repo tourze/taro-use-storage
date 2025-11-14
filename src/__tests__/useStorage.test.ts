@@ -1,3 +1,7 @@
+/**
+ * 向后兼容性测试 - 保持原有测试用例以验证兼容性
+ */
+
 import { renderHook, act } from '@testing-library/react';
 import useStorage, { get, set, remove, refresh } from '../index';
 
